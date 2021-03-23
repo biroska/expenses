@@ -1,5 +1,6 @@
 import 'package:expenses/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(ExpenseApp());
@@ -82,7 +83,8 @@ class PaginaInicial extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16)),
                         Text(
-                          '${tr.date.toString()}',
+                          // Formata a data usando a biblioteca intl
+                          DateFormat('d MMM y').format(tr.date),
                           style: TextStyle(color: Colors.grey[600]),
                         )
                       ],
