@@ -16,6 +16,11 @@ class ExpenseApp extends StatelessWidget {
 }
 
 class PaginaInicial extends StatelessWidget {
+
+  // Controllers para o os TextFields
+  final titleController = TextEditingController();
+  final valueController = TextEditingController();
+
   final _transactions = [
     Transaction(
         id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now()),
@@ -34,7 +39,7 @@ class PaginaInicial extends StatelessWidget {
         ),
         body: Column(
           // Coloca espaco antes e depois dos componentes pq esta dentro de column
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           // Estica os componetes
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -65,7 +70,7 @@ class PaginaInicial extends StatelessWidget {
                         // Similar ao padding do html, espacamento sobre o conteudo
                         padding: EdgeInsets.all(10),
                         child: Text(
-                          'R\$ ${tr.value.toStringAsFixed( 2 )}',
+                          'R\$ ${tr.value.toStringAsFixed(2)}',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
@@ -77,7 +82,7 @@ class PaginaInicial extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        Text( '${tr.title}',
+                        Text('${tr.title}',
                             style: TextStyle(
                                 // color: Colors.purple,
                                 fontWeight: FontWeight.bold,
@@ -92,7 +97,36 @@ class PaginaInicial extends StatelessWidget {
                   ],
                 ));
               }).toList(),
-            )
+            ),
+            Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Título'),
+                      controller: titleController,
+                    ),
+                    TextField(
+                        decoration: InputDecoration(labelText: 'Valor R\$'),
+                        controller: valueController,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton(
+                            onPressed: () {
+                              print( titleController.text );
+                              print( valueController.text );
+                            },
+                            textColor: Colors.purple,
+                            child: Text('Nova Transação'),)
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ));
   }
