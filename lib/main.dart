@@ -1,6 +1,6 @@
-import 'package:expenses/models/transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+import 'components/transaction/transaction_user.dart';
 
 void main() {
   runApp(ExpenseApp());
@@ -16,20 +16,6 @@ class ExpenseApp extends StatelessWidget {
 }
 
 class PaginaInicial extends StatelessWidget {
-
-  // Controllers para o os TextFields
-  final titleController = TextEditingController();
-  final valueController = TextEditingController();
-
-  final _transactions = [
-    Transaction(
-        id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now()),
-    Transaction(
-        id: "t2",
-        title: "Escola Adventista",
-        value: 912.56,
-        date: DateTime.now())
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -52,81 +38,7 @@ class PaginaInicial extends StatelessWidget {
                 child: Text('Gráfico'),
               ),
             ),
-            Column(
-              // Mapeia cada elemento da lista para um widget Card e
-              // devolve uma lista pq estamos usando children
-              children: _transactions.map((tr) {
-                return Card(
-                    child: Row(
-                  children: <Widget>[
-                    // Container do Preco
-                    Container(
-                        // Espacamento interno ao container, mas o mais proximo da borda
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.purple, width: 2)),
-
-                        // Similar ao padding do html, espacamento sobre o conteudo
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          'R\$ ${tr.value.toStringAsFixed(2)}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.purple),
-                        )),
-                    // Container da Descricao e data
-                    Container(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text('${tr.title}',
-                            style: TextStyle(
-                                // color: Colors.purple,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16)),
-                        Text(
-                          // Formata a data usando a biblioteca intl
-                          DateFormat('d MMM y').format(tr.date),
-                          style: TextStyle(color: Colors.grey[600]),
-                        )
-                      ],
-                    ))
-                  ],
-                ));
-              }).toList(),
-            ),
-            Card(
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    TextField(
-                      decoration: InputDecoration(labelText: 'Título'),
-                      controller: titleController,
-                    ),
-                    TextField(
-                        decoration: InputDecoration(labelText: 'Valor R\$'),
-                        controller: valueController,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        FlatButton(
-                            onPressed: () {
-                              print( titleController.text );
-                              print( valueController.text );
-                            },
-                            textColor: Colors.purple,
-                            child: Text('Nova Transação'),)
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
+            TransactionUser(),
           ],
         ));
   }
