@@ -26,8 +26,10 @@ class _TransactionUserState extends State<TransactionUser> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        // Passa a funcao da classe pai que sera executada pela classe filha
+        // Nesse caso para atualizar o estado da lista de transacoes
+        TransactionForm( _addTransaction ),
         TransactionList(_transactions),
-        TransactionForm(),
       ],
     );
   }
