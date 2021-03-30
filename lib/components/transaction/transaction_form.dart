@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
-class TransactionForm extends StatelessWidget {
+class TransactionForm extends StatefulWidget {
 
   // Controllers para o os TextFields
-  final titleController = TextEditingController();
-  final valueController = TextEditingController();
-
-  // Declaracao da funcao que passara os parametros para a classe pai
-  // TransactionUser, no metodo _addTransaction
   final void Function(String, double) onSubmit;
 
   TransactionForm( this.onSubmit );
+
+  @override
+  _TransactionFormState createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final titleController = TextEditingController();
+
+  final valueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,6 @@ class TransactionForm extends StatelessWidget {
       return;
     }
 
-    onSubmit( title, value );
+    widget.onSubmit( title, value );
   }
-
 }
