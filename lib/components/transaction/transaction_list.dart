@@ -39,7 +39,7 @@ class TransactionList extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Colors.purple),
+                        color: Theme.of( context ).primaryColor ),
                   )),
               // Container da Descricao e data
               Container(
@@ -48,10 +48,7 @@ class TransactionList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Text('${tr.title}',
-                      style: TextStyle(
-                          // color: Colors.purple,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16)),
+                      style: Theme.of(context).textTheme.headline6 ),
                   Text(
                     // Formata a data usando a biblioteca intl
                     DateFormat('d MMM y').format(tr.date),
