@@ -46,14 +46,14 @@ class PaginaInicial extends StatefulWidget {
 }
 
 class _PaginaInicialState extends State<PaginaInicial> {
-  final _transactions = [
-    Transaction(
-        id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now()),
-    Transaction(
-        id: "t2",
-        title: "Escola Adventista",
-        value: 912.56,
-        date: DateTime.now())
+  final List<Transaction> _transactions = [
+    // Transaction(
+    //     id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now()),
+    // Transaction(
+    //     id: "t2",
+    //     title: "Escola Adventista",
+    //     value: 912.56,
+    //     date: DateTime.now())
   ];
 
   _openTransactionFormModal(BuildContext context) {

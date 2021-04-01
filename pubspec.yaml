@@ -90,6 +90,8 @@ flutter:
         - asset: assets/fonts/Quicksand-Light.ttf
           weight: 300
 
+  assets:
+    - assets/images/waiting.png
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

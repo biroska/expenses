@@ -16,7 +16,28 @@ class TransactionList extends StatelessWidget {
       // pre definido, senao o scroll nao sabe  calcular qdo realizar o scroll
 
       // O listView permite fazer loading da lista sob demanda
-      child: ListView.builder(
+      child:
+      transactions.isEmpty ?
+
+          Column(
+            children:  <Widget> [
+              // Adiciona espaco de 20 antes do componente
+              SizedBox( height: 30,),
+              Text(
+                'Nenhuma transação cadastrada',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              SizedBox( height: 30,),
+              // Incluido container para que seja possivel delimitar o tamanho
+              // e assim podemos usar o BoxFit.cover
+              Container(
+                height:  200,
+                child: Image.asset('assets/images/waiting.png', fit: BoxFit.cover ),
+              ),
+            ],
+          )
+          :
+      ListView.builder(
         itemCount: transactions.length,
         itemBuilder: (ctx, index) {
           final tr = transactions[index];
