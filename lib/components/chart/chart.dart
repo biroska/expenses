@@ -29,8 +29,17 @@ class Chart extends StatelessWidget {
 
       return {
         'day': DateFormat.E().format(weekDay)[0],
-        'value': 9.99,
+        'value': totalSum,
       };
+    });
+  }
+
+  double get _weekTotalValue{
+    // Funcao fold e semelhante a funcao reduce do Java
+    // Neste exemplo, iniciando em 0.0 acumula o
+    // resultado do return na variavel sum
+    return groupedTransactions.fold( 0.0, (sum, tr) {
+      return sum + tr['value'];
     });
   }
 
@@ -47,7 +56,7 @@ class Chart extends StatelessWidget {
           return ChartBar(
             label: tr['day'],
             value: tr['value'],
-            percentage: 0.10,
+            percentage: (tr['value'] as double) / _weekTotalValue,
           );
         }).toList(),
       ),
