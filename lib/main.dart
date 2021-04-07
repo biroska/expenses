@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'components/chart/chart.dart';
 import 'components/transaction/transaction_form.dart';
 import 'components/transaction/transaction_list.dart';
 import 'models/transaction.dart';
@@ -20,20 +21,18 @@ class ExpenseApp extends StatelessWidget {
         accentColor: Colors.amber,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-            headline6: TextStyle(
+                headline6: TextStyle(
               fontFamily: 'OpenSans',
               fontSize: 18,
               fontWeight: FontWeight.bold,
-            )
-        ),
+            )),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
-            title: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            )
-          ),
+                  title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )),
         ),
       ),
     );
@@ -47,21 +46,26 @@ class PaginaInicial extends StatefulWidget {
 
 class _PaginaInicialState extends State<PaginaInicial> {
   final List<Transaction> _transactions = [
-    // Transaction(
-    //     id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now()),
-    // Transaction(
-    //     id: "t2",
-    //     title: "Escola Adventista",
-    //     value: 912.56,
-    //     date: DateTime.now())
+    Transaction(
+        id: "t0", title: "Conta Antiga", value: 220.53, date: DateTime.now().subtract( Duration(days:33) ) ),
+    Transaction(
+        id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now().subtract( Duration(days:2) ) ),
+    Transaction(
+        id: "t2", title: "Escola Adventista", value: 912.56, date: DateTime.now().subtract( Duration(days:4) ) ),
   ];
 
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return TransactionForm( _addTransaction );
+          return TransactionForm(_addTransaction);
         });
+  }
+
+  List<Transaction> get _recentTransactions{
+    return _transactions.where( (tr) {
+      return tr.date.isAfter( DateTime.now().subtract(Duration(days:7)) );
+    }).toList();
   }
 
   _addTransaction(String title, double value) {
@@ -75,8 +79,7 @@ class _PaginaInicialState extends State<PaginaInicial> {
       _transactions.add(newTransaction);
     });
 
-    Navigator.of( context ).pop();
-
+    Navigator.of(context).pop();
   }
 
   @override
@@ -100,15 +103,7 @@ class _PaginaInicialState extends State<PaginaInicial> {
           // Estica os componetes
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              // Outra opcao para esticar os componentes
-              // width:  double.infinity,
-              child: Card(
-                color: Colors.blue,
-                elevation: 5,
-                child: Text('Gráfico'),
-              ),
-            ),
+            Chart( _recentTransactions ),
             TransactionList(_transactions),
           ],
         ),
