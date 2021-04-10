@@ -27,44 +27,26 @@ class TransactionList extends StatelessWidget {
       itemCount: transactions.length,
       itemBuilder: (ctx, index) {
         final tr = transactions[index];
-        // Mapeia cada elemento da lista para um widget Card e
-        // devolve uma lista pq estamos usando children
-        return Card(
-            child: Row(
-          children: <Widget>[
-            // Container do Preco
-            Container(
-                // Espacamento interno ao container, mas o mais proximo da borda
-                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.purple, width: 2)),
 
-                // Similar ao padding do html, espacamento sobre o conteudo
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  'R\$ ${tr.value.toStringAsFixed(2)}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Theme.of(context).primaryColor),
-                )),
-            // Container da Descricao e data
-            Container(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Text('${tr.title}',
-                    style: Theme.of(context).textTheme.headline6),
-                Text(
-                  // Formata a data usando a biblioteca intl
-                  DateFormat('d MMM y').format(tr.date),
-                  style: TextStyle(color: Colors.grey[600]),
-                )
-              ],
-            ))
-          ],
-        ));
+        return Card(
+          elevation: 5,
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+          child: ListTile(
+            leading: CircleAvatar(
+              radius: 30,
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: FittedBox(child: Text('R\$${tr.value.toStringAsFixed(2)}'))
+              ),
+            ),
+            title: Text(
+              tr.title,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            subtitle: Text(DateFormat('d MMM y').format(tr.date)),
+            trailing:Icon( Icons.delete, color: Theme.of(context).primaryColor, )
+          ),
+        );
       },
     );
   }
@@ -73,12 +55,12 @@ class TransactionList extends StatelessWidget {
     return Column(
       children: <Widget>[
         // Adiciona espaco de 20 antes do componente
-        SizedBox( height: 30 ),
+        SizedBox(height: 30),
         Text(
           'Nenhuma transação cadastrada',
           style: Theme.of(context).textTheme.headline6,
         ),
-        SizedBox( height: 30 ),
+        SizedBox(height: 30),
         // Incluido container para que seja possivel delimitar o tamanho
         // e assim podemos usar o BoxFit.cover
         Container(

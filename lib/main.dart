@@ -52,6 +52,10 @@ class _PaginaInicialState extends State<PaginaInicial> {
         id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now().subtract( Duration(days:2) ) ),
     Transaction(
         id: "t2", title: "Escola Adventista", value: 912.56, date: DateTime.now().subtract( Duration(days:4) ) ),
+    Transaction(
+        id: "t3", title: "Prestação Carro", value: 3500.56, date: DateTime.now() ),
+    Transaction(
+        id: "t4", title: "Valor Muito Grande", value: 912000.56, date: DateTime.now() ),
   ];
 
   _openTransactionFormModal(BuildContext context) {
