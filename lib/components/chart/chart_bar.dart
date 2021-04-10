@@ -20,8 +20,11 @@ class ChartBar extends StatelessWidget {
       children: <Widget>[
         // Forca o texto ficar naquela area, sem quebrar a linha e estragar o
         // layout, no exemplo, ele reduziu o tamanho da fonte
-        FittedBox(
-          child: Text('${value.toStringAsFixed(2)}'),
+        Container(
+          height: 20,
+          child: FittedBox(
+            child: Text('${value.toStringAsFixed(2)}'),
+          ),
         ),
         SizedBox(height: 5),
         Container(
