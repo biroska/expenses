@@ -46,23 +46,23 @@ class PaginaInicial extends StatefulWidget {
 
 class _PaginaInicialState extends State<PaginaInicial> {
   final List<Transaction> _transactions = [
-    Transaction(
-        id: "t0", title: "Conta Antiga", value: 220.53, date: DateTime.now().subtract( Duration(days:33) ) ),
-    Transaction(
-        id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now().subtract( Duration(days:2) ) ),
-    Transaction(
-        id: "t2", title: "Escola Adventista", value: 912.56, date: DateTime.now().subtract( Duration(days:4) ) ),
-    Transaction(
-        id: "t3", title: "Prestação Carro", value: 3500.56, date: DateTime.now() ),
-    Transaction(
-        id: "t4", title: "Valor Muito Grande", value: 91200.56, date: DateTime.now().subtract( Duration( days:1 ) ) ),
+    // Transaction(
+    //     id: "t0", title: "Conta Antiga", value: 220.53, date: DateTime.now().subtract( Duration(days:33) ) ),
+    // Transaction(
+    //     id: "t1", title: "Conta de Luz", value: 220.53, date: DateTime.now().subtract( Duration(days:2) ) ),
+    // Transaction(
+    //     id: "t2", title: "Escola Adventista", value: 912.56, date: DateTime.now().subtract( Duration(days:4) ) ),
+    // Transaction(
+    //     id: "t3", title: "Prestação Carro", value: 3500.56, date: DateTime.now() ),
+    // Transaction(
+    //     id: "t4", title: "Valor Muito Grande", value: 91200.56, date: DateTime.now().subtract( Duration( days:1 ) ) ),
   ];
 
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return TransactionForm(_addTransaction);
+          return TransactionForm(_addTransaction );
         });
   }
 
@@ -84,6 +84,14 @@ class _PaginaInicialState extends State<PaginaInicial> {
     });
 
     Navigator.of(context).pop();
+  }
+
+  void _removeTransaction( String transactionId ){
+    setState(() {
+      _transactions.removeWhere( (tr) {
+        return tr.id == transactionId;
+      });
+    });
   }
 
   @override
@@ -108,7 +116,7 @@ class _PaginaInicialState extends State<PaginaInicial> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart( _recentTransactions ),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _removeTransaction ),
           ],
         ),
       ),
