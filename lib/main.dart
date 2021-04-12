@@ -72,12 +72,12 @@ class _PaginaInicialState extends State<PaginaInicial> {
     }).toList();
   }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value, DateTime transactionDate ) {
     final newTransaction = Transaction(
         id: Random().nextDouble().toString(),
         title: title,
         value: value,
-        date: DateTime.now());
+        date: transactionDate );
 
     setState(() {
       _transactions.add(newTransaction);
