@@ -96,16 +96,23 @@ class _PaginaInicialState extends State<PaginaInicial> {
 
   @override
   Widget build(BuildContext context) {
+
+    // App bar extraido para variavel, para possibilitar a obtencao de sua altura,
+    // via appBar.preferredSize.height
+    AppBar appBar = AppBar(
+      title: Text('Despesas Pessoais'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _openTransactionFormModal(context),
+        ),
+      ],
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Despesas Pessoais'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _openTransactionFormModal(context),
-          ),
-        ],
-      ),
+      // App bar extraido para variavel, para possibilitar a obtencao de sua altura,
+      // via appBar.preferredSize.height
+      appBar: appBar,
       // Habilita o scroll na teLa, mas o componente pai deve ter um tamanho definido
       // O Scaffold possui esse comportamento de tamanho pre definido
       body: SingleChildScrollView(
@@ -115,8 +122,13 @@ class _PaginaInicialState extends State<PaginaInicial> {
           // Estica os componetes
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart( _recentTransactions ),
-            TransactionList(_transactions, _removeTransaction ),
+            // Os componentes chart e transactionList foam envolvidos com
+            // Container para pode setar a altura maxima deles
+            // A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
+            Container( height: _componentRatio( appBar )['secondary'] ,
+                       child: Chart( _recentTransactions )),
+            Container( height: _componentRatio( appBar )['primary'] ,
+                       child: TransactionList(_transactions, _removeTransaction )),
           ],
         ),
       ),
@@ -127,4 +139,23 @@ class _PaginaInicialState extends State<PaginaInicial> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+
+  /// Funcao, que dado um appBar calcula a altura disponivel da tela
+  /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
+  Map<String,double> _componentRatio( AppBar appBar ){
+
+    final availableHeight = MediaQuery.of(context).size.height -
+                            // AppBar com o titulo da App
+                            appBar.preferredSize.height        -
+                            // Altura da barra de notificacao, relogio, bateria, ...
+                            MediaQuery.of(context).padding.top;
+
+    double _ratio = 0.75;
+
+    double _primary = _ratio * availableHeight;
+    double _secondary = (1.0 - _ratio ) * availableHeight;
+
+    return { 'primary': _primary, 'secondary': _secondary };
+  }
+
 }
