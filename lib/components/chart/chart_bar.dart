@@ -6,7 +6,9 @@ class ChartBar extends StatelessWidget {
   final double percentage;
 
   final double _radius = 5;
-  final double _barHeight = 60;
+  final double _barHeight = 0.60;
+  final double _labelHeight = 0.15;
+  final double _spaceBetween = 0.05;
 
   ChartBar({
     this.label,
@@ -16,48 +18,56 @@ class ChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        // Forca o texto ficar naquela area, sem quebrar a linha e estragar o
-        // layout, no exemplo, ele reduziu o tamanho da fonte
-        Container(
-          height: 20,
-          child: FittedBox(
-            child: Text('${value.toStringAsFixed(2)}'),
-          ),
-        ),
-        SizedBox(height: 5),
-        Container(
-          height: _barHeight,
-          width: 10,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
+    return LayoutBuilder(
+      // LayoutBuilder oferece recurso de obter as areas disponiveis
+        builder: (context, constraints ) {
+          return Column(
             children: <Widget>[
               Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.circular(_radius),
+                height: constraints.maxHeight * _labelHeight,
+                // Forca o texto ficar naquela area, sem quebrar a linha e estragar o
+                // layout, no exemplo, ele reduziu o tamanho da fonte
+                child: FittedBox(
+                  child: Text('${value.toStringAsFixed(2)}'),
                 ),
               ),
-              FractionallySizedBox(
-                heightFactor: percentage,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(_radius),
-                  ),
+              // Espacamento entre os numeros e as barras
+              SizedBox(height: constraints.maxHeight * _spaceBetween ),
+              Container(
+                height: constraints.maxHeight * _barHeight,
+                width: 10,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(_radius),
+                      ),
+                    ),
+                    FractionallySizedBox(
+                      heightFactor: percentage,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(_radius),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              SizedBox(height: constraints.maxHeight * _spaceBetween ),
+              Container(
+                  height: constraints.maxHeight * _labelHeight,
+                  child: Text(label),
               ),
             ],
-          ),
-        ),
-        SizedBox(height: 5),
-        Text(label),
-      ],
-    );
+          );
+        });
   }
 }
