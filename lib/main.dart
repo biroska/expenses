@@ -45,6 +45,7 @@ class PaginaInicial extends StatefulWidget {
 }
 
 class _PaginaInicialState extends State<PaginaInicial> {
+  bool _showChart = false;
   final List<Transaction> _transactions = [
     // Transaction(
     //     id: "t0", title: "Conta Antiga", value: 220.53, date: DateTime.now().subtract( Duration(days:33) ) ),
@@ -62,22 +63,22 @@ class _PaginaInicialState extends State<PaginaInicial> {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return TransactionForm(_addTransaction );
+          return TransactionForm(_addTransaction);
         });
   }
 
-  List<Transaction> get _recentTransactions{
-    return _transactions.where( (tr) {
-      return tr.date.isAfter( DateTime.now().subtract(Duration(days:7)) );
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
 
-  _addTransaction(String title, double value, DateTime transactionDate ) {
+  _addTransaction(String title, double value, DateTime transactionDate) {
     final newTransaction = Transaction(
         id: Random().nextDouble().toString(),
         title: title,
         value: value,
-        date: transactionDate );
+        date: transactionDate);
 
     setState(() {
       _transactions.add(newTransaction);
@@ -86,9 +87,9 @@ class _PaginaInicialState extends State<PaginaInicial> {
     Navigator.of(context).pop();
   }
 
-  void _removeTransaction( String transactionId ){
+  void _removeTransaction(String transactionId) {
     setState(() {
-      _transactions.removeWhere( (tr) {
+      _transactions.removeWhere((tr) {
         return tr.id == transactionId;
       });
     });
@@ -96,7 +97,6 @@ class _PaginaInicialState extends State<PaginaInicial> {
 
   @override
   Widget build(BuildContext context) {
-
     // App bar extraido para variavel, para possibilitar a obtencao de sua altura,
     // via appBar.preferredSize.height
     AppBar appBar = AppBar(
@@ -122,13 +122,25 @@ class _PaginaInicialState extends State<PaginaInicial> {
           // Estica os componetes
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Exibir Gráfico"),
+                Switch(
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    }),
+              ],
+            ),
             // Os componentes chart e transactionList foam envolvidos com
             // Container para pode setar a altura maxima deles
             // A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
-            Container( height: _componentRatio( appBar )['secondary'] ,
-                       child: Chart( _recentTransactions )),
-            Container( height: _componentRatio( appBar )['primary'] ,
-                       child: TransactionList(_transactions, _removeTransaction )),
+            _showChart
+                ? manageChartView(appBar)
+                : manageTransactionListView(appBar),
           ],
         ),
       ),
@@ -140,22 +152,32 @@ class _PaginaInicialState extends State<PaginaInicial> {
     );
   }
 
+  Container manageTransactionListView(AppBar appBar) {
+    return Container(
+        height: _componentRatio(appBar)['primary'],
+        child: TransactionList(_transactions, _removeTransaction));
+  }
+
+  Container manageChartView(AppBar appBar) {
+    return Container(
+        height: _componentRatio(appBar)['secondary'],
+        child: Chart(_recentTransactions));
+  }
+
   /// Funcao, que dado um appBar calcula a altura disponivel da tela
   /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
-  Map<String,double> _componentRatio( AppBar appBar ){
-
+  Map<String, double> _componentRatio(AppBar appBar) {
     final availableHeight = MediaQuery.of(context).size.height -
-                            // AppBar com o titulo da App
-                            appBar.preferredSize.height        -
-                            // Altura da barra de notificacao, relogio, bateria, ...
-                            MediaQuery.of(context).padding.top;
+        // AppBar com o titulo da App
+        appBar.preferredSize.height -
+        // Altura da barra de notificacao, relogio, bateria, ...
+        MediaQuery.of(context).padding.top;
 
     double _ratio = 0.75;
 
     double _primary = _ratio * availableHeight;
-    double _secondary = (1.0 - _ratio ) * availableHeight;
+    double _secondary = (1.0 - _ratio) * availableHeight;
 
-    return { 'primary': _primary, 'secondary': _secondary };
+    return {'primary': _primary, 'secondary': _secondary};
   }
-
 }
