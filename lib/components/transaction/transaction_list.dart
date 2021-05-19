@@ -56,23 +56,28 @@ class TransactionList extends StatelessWidget {
     );
   }
 
-  Column showMessageEmptyTransactionList(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        // Adiciona espaco de 20 antes do componente
-        SizedBox(height: 30),
-        Text(
-          'Nenhuma transação cadastrada',
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        SizedBox(height: 30),
-        // Incluido container para que seja possivel delimitar o tamanho
-        // e assim podemos usar o BoxFit.cover
-        Container(
-          height: 200,
-          child: Image.asset('assets/images/waiting.png', fit: BoxFit.cover),
-        ),
-      ],
-    );
+  LayoutBuilder showMessageEmptyTransactionList(BuildContext context) {
+    return LayoutBuilder(builder: ( ctx, constraints ){
+      return Column(
+        children: <Widget>[
+          // Adiciona espaco de 20 antes do componente
+          SizedBox(height: constraints.maxHeight * 0.05),
+          Container(
+            height: constraints.maxHeight * 0.15,
+            child: Text(
+              'Nenhuma transação cadastrada',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+          SizedBox(height: constraints.maxHeight * 0.05 ),
+          // Incluido container para que seja possivel delimitar o tamanho
+          // e assim podemos usar o BoxFit.cover
+          Container(
+            height: constraints.maxHeight * 0.75,
+            child: Image.asset('assets/images/waiting.png', fit: BoxFit.cover),
+          ),
+        ],
+      );
+    });
   }
 }
