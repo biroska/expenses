@@ -97,6 +97,9 @@ class _PaginaInicialState extends State<PaginaInicial> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     // App bar extraido para variavel, para possibilitar a obtencao de sua altura,
     // via appBar.preferredSize.height
     AppBar appBar = AppBar(
@@ -122,25 +125,24 @@ class _PaginaInicialState extends State<PaginaInicial> {
           // Estica os componetes
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Exibir Gráfico"),
-                Switch(
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    }),
-              ],
-            ),
+            if ( isLandscape )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Exibir Gráfico"),
+                  Switch(
+                      value: _showChart,
+                      onChanged: (value) {
+                        setState(() {
+                          _showChart = value;
+                        });
+                      }),
+                ],
+              ),
             // Os componentes chart e transactionList foam envolvidos com
             // Container para pode setar a altura maxima deles
             // A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
-            _showChart
-                ? manageChartView(appBar)
-                : manageTransactionListView(appBar),
+            manageChartAndTransactionViews( isLandscape, appBar ),
           ],
         ),
       ),
@@ -152,15 +154,32 @@ class _PaginaInicialState extends State<PaginaInicial> {
     );
   }
 
+  Container manageChartAndTransactionViews(bool isLandscape, AppBar appBar) {
+
+    return Container(
+
+      child: Column (
+        children: <Widget> [
+          if ( _showChart || !isLandscape )
+            manageChartView(appBar, isLandscape ),
+
+          if( !_showChart || !isLandscape  )
+            manageTransactionListView(appBar),
+        ],
+      ),
+    );
+
+  }
+
   Container manageTransactionListView(AppBar appBar) {
     return Container(
         height: _componentRatio(appBar)['primary'],
         child: TransactionList(_transactions, _removeTransaction));
   }
 
-  Container manageChartView(AppBar appBar) {
+  Container manageChartView(AppBar appBar, bool isLandscape ) {
     return Container(
-        height: _componentRatio(appBar)['secondary'],
+        height: !isLandscape ? _componentRatio(appBar)['secondary'] : _componentRatio(appBar)['secondary'] * 2.3 ,
         child: Chart(_recentTransactions));
   }
 

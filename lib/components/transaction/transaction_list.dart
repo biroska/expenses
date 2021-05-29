@@ -61,9 +61,9 @@ class TransactionList extends StatelessWidget {
       return Column(
         children: <Widget>[
           // Adiciona espaco de 20 antes do componente
-          SizedBox(height: constraints.maxHeight * 0.05),
+          SizedBox(height: constraints.maxHeight * 0.03),
           Container(
-            height: constraints.maxHeight * 0.15,
+            height: constraints.maxHeight * 0.10,
             child: Text(
               'Nenhuma transação cadastrada',
               style: Theme.of(context).textTheme.headline6,
@@ -73,9 +73,12 @@ class TransactionList extends StatelessWidget {
           // Incluido container para que seja possivel delimitar o tamanho
           // e assim podemos usar o BoxFit.cover
           Container(
-            height: constraints.maxHeight * 0.75,
+            height: constraints.maxHeight * 0.67,
             child: Image.asset('assets/images/waiting.png', fit: BoxFit.cover),
           ),
+          SizedBox(height: constraints.maxHeight * 0.15 ),
+          // Incluido container para que seja possivel delimitar o tamanho
+          // e assim podemos usar o BoxFit.cover
         ],
       );
     });
