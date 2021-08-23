@@ -28,7 +28,7 @@ class ExpenseApp extends StatelessWidget {
             )),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
-                  title: TextStyle(
+                headline6: TextStyle(
                 fontFamily: 'OpenSans',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -161,23 +161,25 @@ class _PaginaInicialState extends State<PaginaInicial> {
       child: Column(
         children: <Widget>[
           if (_showChart || !isLandscape) manageChartView(appBar, isLandscape),
-          if (!_showChart || !isLandscape) manageTransactionListView(appBar),
+          if (!_showChart || !isLandscape) manageTransactionListView(appBar, isLandscape),
         ],
       ),
     );
   }
 
-  Container manageTransactionListView(AppBar appBar) {
+  Container manageTransactionListView(AppBar appBar, bool isLandscape ) {
     return Container(
-        height: _componentRatio(appBar)['primary'],
+        height: !isLandscape
+            ? _listPortraitView(appBar)
+            : _listLandscapeView(appBar),
         child: TransactionList(_transactions, _removeTransaction));
   }
 
   Container manageChartView(AppBar appBar, bool isLandscape) {
     return Container(
         height: !isLandscape
-            ? _componentRatio(appBar)['secondary']
-            : _componentRatio(appBar)['secondary'] * 2.3,
+            ? _chartPortraitView(appBar)
+            : _chartLandscapeView(appBar),
         child: Chart(_recentTransactions));
   }
 
@@ -202,20 +204,62 @@ class _PaginaInicialState extends State<PaginaInicial> {
     }
   }
 
-  /// Funcao, que dado um appBar calcula a altura disponivel da tela
-  /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
-  Map<String, double> _componentRatio(AppBar appBar) {
+  double availableHeight(AppBar appBar) {
     final availableHeight = MediaQuery.of(context).size.height -
         // AppBar com o titulo da App
         appBar.preferredSize.height -
         // Altura da barra de notificacao, relogio, bateria, ...
         MediaQuery.of(context).padding.top;
-
-    double _ratio = 0.75;
-
-    double _primary = _ratio * availableHeight;
-    double _secondary = (1.0 - _ratio) * availableHeight;
-
-    return {'primary': _primary, 'secondary': _secondary};
+    return availableHeight;
   }
+
+  /// Funcao, que dado um appBar calcula a altura disponivel da tela
+  /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
+  // @Deprecated("Utilizar as funcoes abaixo, especialidas pela orientacao")
+  // Map<String, double> _componentRatio(AppBar appBar) {
+  //   double availableHeight = this.availableHeight(appBar);
+  //
+  //   double _ratio = 0.75;
+  //
+  //   double _primary = _ratio * availableHeight;
+  //   double _secondary = (1.0 - _ratio) * availableHeight;
+  //
+  //   return {'primary': _primary, 'secondary': _secondary};
+  // }
+  
+ double _listLandscapeView(AppBar appBar) {
+
+    double availableHeight = this.availableHeight(appBar);
+
+    return availableHeight * 0.95;
+  }
+  
+ double _chartLandscapeView(AppBar appBar) {
+
+    double availableHeight = this.availableHeight(appBar);
+
+    return availableHeight * 0.75;
+  }
+
+  double chartPortraitRatio = 0.27;
+  /// Funcao, que dado um appBar calcula a altura disponivel da tela
+  /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
+ double _chartPortraitView(AppBar appBar) {
+
+    double availableHeight = this.availableHeight(appBar);
+
+    return availableHeight * chartPortraitRatio;
+  }
+
+  /// Funcao, que dado um appBar calcula a altura disponivel da tela
+  /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
+  double _listPortraitView(AppBar appBar) {
+
+    double availableHeight = this.availableHeight(appBar);
+
+    double listRatio = (1 - chartPortraitRatio );
+
+    return availableHeight * listRatio;
+  }
+
 }
