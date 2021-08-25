@@ -97,8 +97,9 @@ class _PaginaInicialState extends State<PaginaInicial> {
 
   @override
   Widget build(BuildContext context) {
+    var mediaQueryData = MediaQuery.of(context);
     bool isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+        mediaQueryData.orientation == Orientation.landscape;
 
     // App bar extraido para variavel, para possibilitar a obtencao de sua altura,
     // via appBar.preferredSize.height
@@ -119,33 +120,37 @@ class _PaginaInicialState extends State<PaginaInicial> {
       appBar: appBar,
       // Habilita o scroll na teLa, mas o componente pai deve ter um tamanho definido
       // O Scaffold possui esse comportamento de tamanho pre definido
-      body: SingleChildScrollView(
-        child: Column(
-          // Coloca espaco antes e depois dos componentes pq esta dentro de column
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
-          // Estica os componetes
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // Removida a linha do Switch pois incluimos essa opcao via icones no appBar
-            // if (isLandscape)
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       Text("Exibir Gráfico"),
-            //       Switch(
-            //           value: _showChart,
-            //           onChanged: (value) {
-            //             setState(() {
-            //               _showChart = value;
-            //             });
-            //           }),
-            //     ],
-            //   ),
-            // Os componentes chart e transactionList foam envolvidos com
-            // Container para pode setar a altura maxima deles
-            // A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
-            manageChartAndTransactionViews(isLandscape, appBar),
-          ],
+      // Safe Area, garante que a aplicacao trabalhe em uma area segura, util para
+      // evitar componente de tela/hardware, como o notch
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            // Coloca espaco antes e depois dos componentes pq esta dentro de column
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // Estica os componetes
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // Removida a linha do Switch pois incluimos essa opcao via icones no appBar
+              // if (isLandscape)
+              //   Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Text("Exibir Gráfico"),
+              //       Switch(
+              //           value: _showChart,
+              //           onChanged: (value) {
+              //             setState(() {
+              //               _showChart = value;
+              //             });
+              //           }),
+              //     ],
+              //   ),
+              // Os componentes chart e transactionList foam envolvidos com
+              // Container para pode setar a altura maxima deles
+              // A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
+              manageChartAndTransactionViews(isLandscape, appBar, mediaQueryData),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -156,30 +161,30 @@ class _PaginaInicialState extends State<PaginaInicial> {
     );
   }
 
-  Container manageChartAndTransactionViews(bool isLandscape, AppBar appBar) {
+  Container manageChartAndTransactionViews(bool isLandscape, AppBar appBar, MediaQueryData mediaQueryData) {
     return Container(
       child: Column(
         children: <Widget>[
-          if (_showChart || !isLandscape) manageChartView(appBar, isLandscape),
-          if (!_showChart || !isLandscape) manageTransactionListView(appBar, isLandscape),
+          if (_showChart || !isLandscape) manageChartView(appBar, isLandscape, mediaQueryData),
+          if (!_showChart || !isLandscape) manageTransactionListView(appBar, isLandscape, mediaQueryData),
         ],
       ),
     );
   }
 
-  Container manageTransactionListView(AppBar appBar, bool isLandscape ) {
+  Container manageTransactionListView(AppBar appBar, bool isLandscape, MediaQueryData mediaQueryData ) {
     return Container(
         height: !isLandscape
-            ? _listPortraitView(appBar)
-            : _listLandscapeView(appBar),
+            ? _listPortraitView(appBar, mediaQueryData)
+            : _listLandscapeView(appBar, mediaQueryData ),
         child: TransactionList(_transactions, _removeTransaction));
   }
 
-  Container manageChartView(AppBar appBar, bool isLandscape) {
+  Container manageChartView(AppBar appBar, bool isLandscape, MediaQueryData mediaQueryData) {
     return Container(
         height: !isLandscape
-            ? _chartPortraitView(appBar)
-            : _chartLandscapeView(appBar),
+            ? _chartPortraitView(appBar, mediaQueryData)
+            : _chartLandscapeView(appBar, mediaQueryData),
         child: Chart(_recentTransactions));
   }
 
@@ -204,12 +209,12 @@ class _PaginaInicialState extends State<PaginaInicial> {
     }
   }
 
-  double availableHeight(AppBar appBar) {
-    final availableHeight = MediaQuery.of(context).size.height -
+  double availableHeight(AppBar appBar, MediaQueryData mediaQueryData) {
+    final availableHeight = mediaQueryData.size.height -
         // AppBar com o titulo da App
         appBar.preferredSize.height -
         // Altura da barra de notificacao, relogio, bateria, ...
-        MediaQuery.of(context).padding.top;
+        mediaQueryData.padding.top;
     return availableHeight;
   }
 
@@ -227,16 +232,16 @@ class _PaginaInicialState extends State<PaginaInicial> {
   //   return {'primary': _primary, 'secondary': _secondary};
   // }
   
- double _listLandscapeView(AppBar appBar) {
+ double _listLandscapeView(AppBar appBar, MediaQueryData mediaQueryData) {
 
-    double availableHeight = this.availableHeight(appBar);
+    double availableHeight = this.availableHeight(appBar, mediaQueryData );
 
     return availableHeight * 0.95;
   }
   
- double _chartLandscapeView(AppBar appBar) {
+ double _chartLandscapeView(AppBar appBar, MediaQueryData mediaQueryData) {
 
-    double availableHeight = this.availableHeight(appBar);
+    double availableHeight = this.availableHeight(appBar, mediaQueryData);
 
     return availableHeight * 0.75;
   }
@@ -244,18 +249,18 @@ class _PaginaInicialState extends State<PaginaInicial> {
   double chartPortraitRatio = 0.27;
   /// Funcao, que dado um appBar calcula a altura disponivel da tela
   /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
- double _chartPortraitView(AppBar appBar) {
+ double _chartPortraitView(AppBar appBar, MediaQueryData mediaQueryData) {
 
-    double availableHeight = this.availableHeight(appBar);
+    double availableHeight = this.availableHeight(appBar, mediaQueryData);
 
     return availableHeight * chartPortraitRatio;
   }
 
   /// Funcao, que dado um appBar calcula a altura disponivel da tela
   /// A SOMA DAS ALTURAS, NAO PODE SUPERAR 100% DA ALTURA DISPONIVEL
-  double _listPortraitView(AppBar appBar) {
+  double _listPortraitView(AppBar appBar, MediaQueryData mediaQueryData) {
 
-    double availableHeight = this.availableHeight(appBar);
+    double availableHeight = this.availableHeight(appBar, mediaQueryData );
 
     double listRatio = (1 - chartPortraitRatio );
 
